@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Download Image Async</string>
+    <string name="download_button_text">Download</string>
+    <string name="download_status_started">Download: started</string>
+    <string name="download_status_finished">Download: finished</string>
+
+</resources>
