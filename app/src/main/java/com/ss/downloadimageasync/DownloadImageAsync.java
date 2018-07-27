@@ -28,36 +28,32 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, String> {
     @Override
     protected String doInBackground(String... strings) {
         int count;
+
         try {
             URL url = new URL(strings[0]);
             URLConnection connection = url.openConnection();
             connection.connect();
             int lengthOfFile = connection.getContentLength();
 
-            InputStream inputStream = new BufferedInputStream(url.openStream());
 
             String storageDir = strings[1];
             String fileName = "/downloaded_image_for_app.jpg";
 
-            File imageFile = new File(storageDir + fileName);
-
-            OutputStream outputStream = new FileOutputStream(imageFile);
-
             byte[] data = new byte[1024];
             int total = 0;
+            File imageFile = new File(storageDir + fileName);
 
-            while ((count = inputStream.read(data)) != -1) {
-                total += count;
-                publishProgress(total * 100 / lengthOfFile);
-                outputStream.write(data, 0, count);
+            try (InputStream inputStream = new BufferedInputStream(url.openStream());
+                 OutputStream outputStream = new FileOutputStream(imageFile)) {
+
+                while ((count = inputStream.read(data)) != -1) {
+                    total += count;
+                    publishProgress(total * 100 / lengthOfFile);
+                    outputStream.write(data, 0, count);
+                }
             }
 
-            inputStream.close();
-            outputStream.flush();
-            outputStream.close();
-
             return imageFile.getAbsolutePath();
-
         } catch (IOException e) {
             Log.e("-------", e.toString());
             e.printStackTrace();
